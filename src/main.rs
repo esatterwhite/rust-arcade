@@ -1,20 +1,10 @@
 extern crate sdl2;
 
-#[macro_use]
-mod events;
-
+mod phi;
+mod views;
 use sdl2::pixels::Color;
+use phi::Events;
 
-struct_events! {
-    keyboard: {
-        key_escape: Escape,
-        key_up: Up,
-        key_down: Down
-    },
-    else: {
-        quit: Quit { .. }
-    }
-}
 
 fn main() {
 
