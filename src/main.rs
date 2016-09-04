@@ -5,6 +5,6 @@ mod views;
 
 fn main() {
     self::phi::spawn("Arcade Shooter", |_|{
-        Box::new(self::views::DefaultView)
+        Box::new(self::views::ViewA)
     });
 }
