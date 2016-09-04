@@ -5,13 +5,15 @@ mod events;
 
 use sdl2::pixels::Color;
 
-
 struct_events! {
-    keyboard:{
+    keyboard: {
         key_escape: Escape,
         key_up: Up,
         key_down: Down
-    }    
+    },
+    else: {
+        quit: Quit { .. }
+    }
 }
 
 fn main() {
@@ -35,7 +37,7 @@ fn main() {
 
     loop {
         events.pump();
-        if events.now.key_escape == Some(true) {
+        if events.now.quit || events.now.key_escape == Some(true) {
             break
         }
         // render a black window
