@@ -14,7 +14,8 @@ macro_rules! struct_events {
             // Some(false) released
             // None - nothin is happening
             $(pub $k_alias: Option<bool> , )*
-            $(pub $e_alias: bool),*
+            $(pub $e_alias: bool,)*
+            resize: Option<(u32, u32)>,
         }
 
         impl ImmediateEvents {
@@ -23,7 +24,8 @@ macro_rules! struct_events {
                     // nothing has happened during initialization
                     // set it to None
                     $( $k_alias: None,)*
-                    $( $e_alias: false),*
+                    $( $e_alias: false,)*
+                    resize:None
                 }
             }
         }

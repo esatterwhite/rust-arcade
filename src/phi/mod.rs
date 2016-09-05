@@ -2,11 +2,11 @@ extern crate sdl2;
 
 #[macro_use]
 mod events;
+pub mod data;
 
 use sdl2::render::Renderer;
 
 pub fn spawn<F>(title: &str, init:F) where F: Fn( &mut Phi ) -> Box<View> {
-
 
     // initialize SDL2
     let sdl_context =  sdl2::init().unwrap();
@@ -88,7 +88,7 @@ pub struct Phi<'window> {
     pub renderer: Renderer<'window>
 }
 
-impl<`window> Phi<`window> {
+impl<'window> Phi<'window> {
     pub fn output_size(&self) -> ( f64, f64 ){
         let ( h, w ) = self.renderer.output_size().unwrap();
         ( w as f64, h as f64 )
