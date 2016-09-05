@@ -54,7 +54,10 @@ pub fn spawn<F>(title: &str, init:F) where F: Fn( &mut Phi ) -> Box<View> {
            fps = 0;
        }
 
+        // pump spins the game loop 1 tick
         context.events.pump();
+
+        // render returns a view action, which we match on
         match current_view.render( &mut context, elapsed ){
             ViewAction::None => context.renderer.present(),
             ViewAction::Quit => break,
@@ -69,7 +72,9 @@ struct_events! {
         key_escape: Escape,
         key_up: Up,
         key_down: Down,
-        key_space: Space
+        key_space: Space,
+        key_left: Left,
+        key_right: Right
     },
     else: {
         quit: Quit { .. }
