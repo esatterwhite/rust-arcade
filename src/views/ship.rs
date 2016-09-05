@@ -1,50 +1,19 @@
 use phi::{Phi,View,ViewAction};
+use phi::data::Rectangle;
 use sdl2::pixels::Color;
-use sdl2::rect::Rect as SdlRect;
 
 const PLAYER_SPEED: f64 = 180.0;
 
 struct Ship {
     rect: Rectangle
 }
-
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub struct Rectangle {
-    pub x: f64,
-    pub y: f64,
-    pub w: f64,
-    pub h: f64,
-}
-
-impl Rectangle {
-    pub fn to_sdl( self ) -> Option<SdlRect> {
-        assert!(self.w >= 0.0 && self.h >= 0.0 );
-        SdlRect::new( self.x as i32, self.y as i32, self.w as u32, self.h as u32 ).unwrap()
-    }
-
-    pub fn move_inside( self, parent: Rectangle ) -> Option<Rectangle>{
-        if self.w > parent.w || self.h > parent.h {
-            return None;
-        }
-
-        Some(Rectangle {
-            w:  self.w,
-            h:  self.h,
-            x:  if self.x < parent.x { parent.x }
-                else if self.x + self.w >= parent.x + parent.w { parent.x + parent.w - self.w }
-                else { self.x },
-            y:  if self.y < parent.y { parent.y }
-                else if self.y + self.h > parent.y + parent.h { parent.y + parent.w - self.h }
-                else { self.y }
-        })
-    }
-}
-
 pub struct ShipView {
     player: Ship
 }
 
+/// Ship view
 impl ShipView {
+    /// Function new
     pub fn new(phi: &mut Phi) -> Self {
         ShipView {
             player: Ship {
@@ -59,13 +28,12 @@ impl ShipView {
     }
 }
 
+
 impl View for ShipView {
+    /// arcade method
     fn render(&mut self, context: &mut Phi, elapsed:f64) -> ViewAction{
-        let renderer = &mut context.renderer;
         let events   = &context.events;
         let traveled = PLAYER_SPEED * elapsed;
-
-
         if events.now.quit || events.now.key_escape == Some(true){
             return ViewAction::Quit
         }
@@ -90,17 +58,27 @@ impl View for ShipView {
             ( false, true ) => moved,
         };
 
-        self.player.rect = self.player.rect.move_inside( win ).unwrap();
-       
+        let bounding_box = Rectangle {
+            x: 0.0,
+            y: 0.0,
+            w: context.output_size().0 * 0.50,
+            h: context.output_size().1,
+        };
+        
+        self.player.rect.x += dx;
+        self.player.rect.y += dy;
+
+        println!("y: {}, dy:{}", self.player.rect.y, dy);         
         // view logic
         
-        renderer.set_draw_color(Color::RGB(0,0,0));
-        renderer.clear();
+        context.renderer.set_draw_color(Color::RGB(0,0,0));
+        context.renderer.clear();
 
         // rendering logic
-        renderer.set_draw_color(Color::RGB(200, 200, 50));
-        renderer.fill_rect( self.player.rect.to_sdl().unwrap());
+        context.renderer.set_draw_color(Color::RGB(200, 200, 50));
+        context.renderer.fill_rect( self.player.rect.to_sdl().unwrap());
 
+        self.player.rect = self.player.rect.move_inside( bounding_box ).unwrap();
         ViewAction::None
     }
 }
