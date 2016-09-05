@@ -15,7 +15,7 @@ pub fn spawn<F>(title: &str, init:F) where F: Fn( &mut Phi ) -> Box<View> {
 
     // create a new window
     let window = video.window(&title, 800, 600)
-            .position_centered().opengl()
+            .position_centered().opengl().resizable()
             .build().unwrap();
 
     let mut context = Phi{
@@ -55,7 +55,7 @@ pub fn spawn<F>(title: &str, init:F) where F: Fn( &mut Phi ) -> Box<View> {
        }
 
         // pump spins the game loop 1 tick
-        context.events.pump();
+        context.events.pump( &mut context.renderer );
 
         // render returns a view action, which we match on
         match current_view.render( &mut context, elapsed ){
@@ -86,6 +86,13 @@ struct_events! {
 pub struct Phi<'window> {
     pub events: Events,
     pub renderer: Renderer<'window>
+}
+
+impl<`window> Phi<`window> {
+    pub fn output_size(&self) -> ( f64, f64 ){
+        let ( h, w ) = self.renderer.output_size().unwrap();
+        ( w as f64, h as f64 )
+    }
 }
 
 /// A Way for the currently executed View
