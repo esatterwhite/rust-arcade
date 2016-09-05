@@ -47,7 +47,7 @@ macro_rules! struct_events {
                 }
             }
 
-            pub fn pump( &mut self ) {
+            pub fn pump( &mut self, renderer: &mut self::sdl2::render::Renderer ) {
                 self.now = ImmediateEvents::new();
 
                 for event in self.pump.poll_iter() {
